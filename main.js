@@ -6,9 +6,9 @@ var roleLongDistanceHarvester = require('role.longDistanceHarvester');
 
 var HOME = 'W8N3';
 
-var harvesterLimit = 5;
-var builderLimit = 4;
-var upgraderLimit = 4;
+var harvesterLimit = 4;
+var builderLimit = 2;
+var upgraderLimit = 3;
 var repairerLimit = 3;
 var longDistanceHarvesterLimit = 6;
 
