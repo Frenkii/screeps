@@ -10,53 +10,64 @@ var roleUpgrader = require('role.upgrader');
 
 var roleRepairer = {
     
-     run: function(creep) {
-    	    if(creep.carry.energy == creep.carryCapacity) {
+    run: function(creep) { 
+        
+        if((creep.memory.working) && creep.carry.energy == 0) {
+			creep.memory.working = false;
+            creep.say('🔄 harvest');
+	    }
+	    if(!(creep.memory.working) && creep.carry.energy == creep.carryCapacity) {
+			creep.memory.working = true;
+	        creep.say('🚧 repair');
+		}
+        
+        //when creep has full energy
+		if(creep.memory.working) {
 
-                var damagedPrimary = creep.room.find(FIND_STRUCTURES, {
+            //find storages and containers fist and repair them
+            var damagedStorages = creep.room.find(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return (structure.structureType == STRUCTURE_CONTAINER ||
+                        structure.structureType == STRUCTURE_STORAGE) && structure.hits < structure.hitsMax;
+                }
+            });
+
+            if (damagedStorages.length > 0) {
+
+                if(creep.repair(damagedStorages[0]) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(damagedStorages[0], {maxRooms: 1, visualizePathStyle: {stroke: '#ffffff'}});
+                }
+
+            } else {
+
+                //when all storages have full hits, repair the roads
+                var targets = creep.room.find(FIND_STRUCTURES, {
 
                     filter: (structure) => {
-                        return (structure.structureType == STRUCTURE_CONTAINER ||
-                            structure.structureType == STRUCTURE_STORAGE) && structure.hits < structure.hitsMax;
+                        return (structure.structureType == STRUCTURE_ROAD) && structure.hits < structure.hitsMax;
                     }
                 });
 
-                if (damagedPrimary != undefined) {
-                    creep.say('to Container');
-                    if(creep.repair(damagedPrimary[0]) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(damagedPrimary[0], {maxRooms: 1, visualizePathStyle: {stroke: '#ffffff'}});
+                if(targets.length > 0) {
+
+                    if(creep.repair(targets[0]) == ERR_NOT_IN_RANGE) {
+
+                        creep.moveTo(targets[0], {maxRooms: 1, visualizePathStyle: {stroke: '#ffffff'}});
 
                     }
-                } else {
-
-                        var targets = creep.room.find(FIND_STRUCTURES, {
-
-                            filter: (structure) => {
-                                return (structure.structureType == STRUCTURE_ROAD) && structure.hits < structure.hitsMax;
-                            }
-                        });
-
-                        if(targets.length > 0) {
-
-                        creep.say('repair road');
-
-                            if(creep.repair(targets[0]) == ERR_NOT_IN_RANGE) {
-
-                                creep.moveTo(targets[0], {maxRooms: 1, visualizePathStyle: {stroke: '#ffffff'}});
-                            //creep.say('repairing');
-                            }
-                        }
-
-                    }
-                } else  {  
-
-                var source = creep.pos.findClosestByPath(FIND_SOURCES);
-
-                if(creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(source, {maxRooms: 1, visualizePathStyle: {stroke: '#ffaa00'}});
                 }
+
+            }
+        } else {
+
+            //if creep is not working --> harvest energy
+            var sources = creep.room.find(FIND_SOURCES);
+            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(sources[0], {maxRooms: 1, visualizePathStyle: {stroke: '#ffaa00'}});
             }
         }
+
+    }
 };
 
 module.exports = roleRepairer;
