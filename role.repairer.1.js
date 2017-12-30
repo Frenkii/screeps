@@ -10,7 +10,7 @@ var roleUpgrader = require('role.upgrader');
 
 var roleRepairer = {
     
-     run: function(creep) {
+     run: function(creep) { 
     	    if(creep.carry.energy == creep.carryCapacity) {
 
                 var damagedPrimary = creep.room.find(FIND_STRUCTURES, {
