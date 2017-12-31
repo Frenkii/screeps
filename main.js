@@ -52,7 +52,7 @@ module.exports.loop = function () {
     var repairers = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer');
     console.log('Repairer: ' + repairers.length + '/' + repairerLimit);
     
-    var distanceHarvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'longDistanceHarvester');
+    var distanceHarvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'distanceHarvester');
     console.log('Distance Harvesters: ' + distanceHarvesters.length + 'distanceHarvesterLimit');
    
     if(harvesters.length < harvesterLimit) {
