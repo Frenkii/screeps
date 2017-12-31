@@ -2,7 +2,7 @@ var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleRepairer = require('role.repairer');
-var roleLongDistanceHarvester = require('role.longDistanceHarvester');
+var roleDistanceHarvester = require('role.distanceHarvester');
 
 var HOME = 'W8N3';
 
@@ -10,7 +10,7 @@ var harvesterLimit = 4;
 var builderLimit = 2;
 var upgraderLimit = 3;
 var repairerLimit = 3;
-var longDistanceHarvesterLimit = 6;
+var distanceHarvesterLimit = 6;
 
 module.exports.loop = function () {
 
@@ -52,8 +52,8 @@ module.exports.loop = function () {
     var repairers = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer');
     console.log('Repairer: ' + repairers.length + '/' + repairerLimit);
     
-    var longDistanceHarvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'longDistanceHarvester');
-    console.log('Long Distance Harvesters: ' + longDistanceHarvesters.length + '/' + longDistanceHarvesterLimit);
+    var distanceHarvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'longDistanceHarvester');
+    console.log('Distance Harvesters: ' + distanceHarvesters.length + 'distanceHarvesterLimit');
    
     if(harvesters.length < harvesterLimit) {
         var newName = 'Harvester' + Game.time;
@@ -79,11 +79,11 @@ module.exports.loop = function () {
         Game.spawns['Spawn1'].spawnCreep([WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE], newName, 
             {memory: {role: 'builder', building: false, working: false, target: null}});
 
-    } else if(longDistanceHarvesters.length < longDistanceHarvesterLimit) {
-        var newName = 'LongDistanceHarvester' + Game.time;
-        console.log('Spawning new LDH: ' + newName);
+    } else if(distanceHarvesters.length < distanceHarvesterLimit) {
+        var newName = 'DistanceHarvester' + Game.time;
+        console.log('Spawning new DH: ' + newName);
         Game.spawns['Spawn1'].spawnCreep([WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE], newName,
-            {memory: {role: 'longDistanceHarvester', working: false, home: HOME, targetRoom: 'W7N3', target: null}})
+            {memory: {role: 'distanceHarvester', working: false, home: HOME, targetRoom: 'W7N3', target: null}})
     } else {
         console.log('All Limits reached');
     }
@@ -112,8 +112,8 @@ module.exports.loop = function () {
         if(creep.memory.role == 'repairer') {
             roleRepairer.run(creep);
         }
-        if(creep.memory.role == 'longDistanceHarvester') {
-            roleLongDistanceHarvester.run(creep);
+        if(creep.memory.role == 'distanceHarvester') {
+            roleDistanceHarvester.run(creep);
         }
     } 
 }
